@@ -9,7 +9,8 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "4.4.3"
+    "express": "4.4.3",
+    "sha1":"1.1.0"
   },
   "author": "John Heroy",
   "license": "ISC"
