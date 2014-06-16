@@ -8,6 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
+  "dependencies": {
+    "express": "4.4.3",
+    "logfmt": "^1.1.2"
+  },
   "author": "John Heroy",
   "license": "ISC"
 }
