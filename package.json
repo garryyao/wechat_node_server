@@ -9,8 +9,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "4.4.3",
-    "logfmt": "^1.1.2"
+    "express": "4.4.3"
   },
   "author": "John Heroy",
   "license": "ISC"
