@@ -83,7 +83,7 @@ messages.on('child_added', function(snapshot) {
 		funcFlag : 0
 	};
 	weixin.sendMsg(resMsg);
-})
+});
 
 
 // Start
