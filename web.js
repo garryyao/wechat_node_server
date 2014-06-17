@@ -34,7 +34,7 @@ weixin.textMsg(function(msg) {
                 fromUserName : msg.toUserName,
                 toUserName : msg.fromUserName,
                 msgType : "text",
-                content : "这是文本回复",
+                content : （"你好 " ＋ msg.fromUserName),
                 funcFlag : 0
             };
             break;
