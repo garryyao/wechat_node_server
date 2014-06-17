@@ -80,7 +80,7 @@ messages.on('child added', function(snapshot) {
 		toUserName : "owHEYt8FZJVTvs3rp_3ra9tc-wfI", // to be replaced by all users
 		msgType : "text",
 		content : formatted_message,
-		funcFlag = 0
+		funcFlag : 0
 	};
 	weixin.sendMsg(resMsg);
 })
