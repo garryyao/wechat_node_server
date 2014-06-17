@@ -5,7 +5,6 @@ var connect = require("connect");
 var app = express();
 app.use(connect.json());
 app.use(connect.urlencoded());
-app.use(connect.multipart());
 
 // wechat config
 weixin.token = "efef";
@@ -20,6 +19,7 @@ var users = fireRoute.child('users');
 
 // authenticate signature
 app.get('/', function(req, res) {
+	console.log(typeof res);
     if (weixin.checkSignature(req)) {
         res.send(200, req.query.echostr);
     } else {
@@ -32,7 +32,9 @@ weixin.textMsg(function(msg) {
     console.log("textMsg received");
     console.log(JSON.stringify(msg));
 
-    
+    var name = "John";
+    var text = msg.content;
+    messages.push({ name: name, text: text });
 
     var resMsg = {};
     switch (msg.content) {
@@ -72,18 +74,23 @@ weixin.textMsg(function(msg) {
 
 // listen for new messages and send to wechat users
 // check for change to messages in firebase, then push message to all users accordingly
+/*
 messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	var formatted_message = message.name + " says: " + message.text;
-	var pushMsg = {
+	console.log(formatted_message);
+	var pushMsg = {};
+	pushMsg = {
 		fromUserName : WEIXIN_HAO,
 		toUserName : "owHEYt8FZJVTvs3rp_3ra9tc-wfI",
 		msgType : "text",
 		content : formatted_message,
 		funcFlag : 0
 	};
+	console.log(pushMsg);
 	weixin.sendMsg(pushMsg);
 });
+*/
 
 // Start
 app.post('/', function(req, res) {
