@@ -1,26 +1,19 @@
+// declarations
 var express = require("express");
-var sha1 = require('sha1');
+var weixin = require("weixin-api");
 var app = express();
 
+// config
+weixin.token = "efef";
+
+// access verification
 app.get('/', function(req, res) {
-  res.send('Hello, EF!');
-
-  // wechat verification
-  signature = req.params.signature;
-  timestamp = req.params.timestamp;
-  nonce = req.params.nonce;
-  echostr = req.params.echostr;
-  TOKEN = "efef";
-
-  tmpArr = [TOKEN, timestamp, nonce];
-  tmpStr = sha1(tmpArr.sort().join());
-
-  if (signature === tmpStr) {
-  	res.writeHead(200);
-  	res.write(echostr);
-  	res.end();
-  }
-
+    // check signature
+    if (weixin.checkSignature(req)) {
+        res.send(200, req.query.echostr);
+    } else {
+        res.send(200, 'fail');
+    }
 });
 
 var port = Number(process.env.PORT || 5000);
