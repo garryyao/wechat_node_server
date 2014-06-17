@@ -75,14 +75,14 @@ weixin.textMsg(function(msg) {
 messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	var formatted_message = message.name + " says: " + message.text;
-	var textMsg = {
+	var pushMsg = {
 		fromUserName : WEIXIN_HAO,
 		toUserName : "owHEYt8FZJVTvs3rp_3ra9tc-wfI",
 		msgType : "text",
 		content : formatted_message,
 		funcFlag : 0
 	};
-	weixin.sendMsg(textMsg);
+	weixin.sendMsg(pushMsg);
 });
 
 // Start
