@@ -38,6 +38,16 @@ weixin.textMsg(function(msg) {
                 funcFlag : 0
             };
             break;
+
+        case "my name" :
+        	resMsg = {
+        		fromUserName : msg.toUserName,
+        		toUserName : msg.fromUserName,
+        		msgType : "text",
+        		content : "hi back",
+        		funcFlag : 0
+        	};
+        	break;
     }
 
     weixin.sendMsg(resMsg);
