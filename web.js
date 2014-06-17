@@ -32,7 +32,6 @@ weixin.textMsg(function(msg) {
                 content : "这是文本回复",
                 funcFlag : 0
             };
-            break;
     }
 
     weixin.sendMsg(resMsg);
