@@ -9,10 +9,11 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "connect": "^2.19.6",
     "express": "4.4.3",
-    "sha1":"1.1.0",
-    "weixin-api" : ">=0.1.6",
-    "xml2js" : "0.2.6"
+    "sha1": "1.1.0",
+    "weixin-api": ">=0.1.6",
+    "xml2js": "0.2.6"
   },
   "author": "John Heroy",
   "license": "ISC"

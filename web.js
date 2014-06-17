@@ -3,7 +3,9 @@ var express = require("express");
 var weixin = require("weixin-api");
 var app = express();
 
-app.use(express.bodyParser());
+app.use(connect.json());
+app.use(connect.urlencoded());
+app.use(connect.multipart());
 
 // config
 weixin.token = "efef";
@@ -34,6 +36,7 @@ weixin.textMsg(function(msg) {
                 content : "这是文本回复",
                 funcFlag : 0
             };
+            break;
     }
 
     weixin.sendMsg(resMsg);
