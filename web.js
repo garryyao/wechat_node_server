@@ -37,7 +37,7 @@ weixin.textMsg(function(msg) {
     }
 
     weixin.sendMsg(resMsg);
-}
+});
 
 // Start
 app.post('/', function(req, res) {
