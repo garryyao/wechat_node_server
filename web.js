@@ -9,8 +9,7 @@ app.use(connect.multipart());
 
 // wechat config
 weixin.token = "efef";
-var APP_ID = "wx4ee5ca70e09083cb";
-var APP_SECRET = "c6c24defe7cd98877a81a1b0cf67969d";
+var WEIXIN_HAO = "gh_a5956fdd03e2";
 
 // firebase declarations
 var Firebase = require('firebase');
@@ -66,7 +65,7 @@ weixin.textMsg(function(msg) {
         		fromUserName : msg.toUserName,
         		toUserName : msg.fromUserName,
         		msgType : "text",
-        		content : msg.toUserName,
+        		content : WEIXIN_HAO,
         		funcFlag : 0
         	};
         	break;
