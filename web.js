@@ -72,7 +72,7 @@ weixin.textMsg(function(msg) {
 
 // listen for new messages and send to wechat users
 // check for change to messages in firebase, then push message to all users accordingly
-messages.on('child added', function(snapshot) {
+messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	var formatted_message = message.name + " says: " + message.text;
 	var resMsg = {
