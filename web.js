@@ -35,10 +35,6 @@ weixin.textMsg(function(msg) {
     
 
     var resMsg = {};
-
-
-
-
     switch (msg.content) {
         case "hello" :
             resMsg = {
@@ -75,6 +71,19 @@ weixin.textMsg(function(msg) {
 });
 
 // listen for new messages and send to wechat users
+// check for change to messages in firebase, then push message to all users accordingly
+messages.on('child added', function(snapshot) {
+	var message = snapshot.val();
+	var formatted_message = message.name + " says: " + message.text;
+	var resMsg = {
+		fromUserName : WEIXIN_HAO,
+		toUserName : "owHEYt8FZJVTvs3rp_3ra9tc-wfI", // to be replaced by all users
+		msgType : "text",
+		content : formatted_message,
+		funcFlag = 0
+	};
+	weixin.sendMsg(resMsg);
+})
 
 
 // Start
