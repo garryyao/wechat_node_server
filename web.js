@@ -37,6 +37,12 @@ weixin.textMsg(function(msg) {
     weixin.sendMsg(resMsg);
 }
 
+// Start
+app.post('/', function(req, res) {
+    // loop
+    weixin.loop(req, res);
+});
+
 var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
   console.log("Listening on " + port);
