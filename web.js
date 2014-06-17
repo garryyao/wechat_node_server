@@ -28,13 +28,13 @@ weixin.textMsg(function(msg) {
     var resMsg = {};
 
     switch (msg.content) {
-        case "文本" :
+        case "hello" :
             // 返回文本消息
             resMsg = {
                 fromUserName : msg.toUserName,
                 toUserName : msg.fromUserName,
                 msgType : "text",
-                content : （"你好 " ＋ msg.fromUserName),
+                content : "hi back",
                 funcFlag : 0
             };
             break;
