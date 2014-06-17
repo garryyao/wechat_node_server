@@ -34,6 +34,8 @@ weixin.textMsg(function(msg) {
             };
             break;
     }
+
+    weixin.sendMsg(resMsg);
 }
 
 var port = Number(process.env.PORT || 5000);
