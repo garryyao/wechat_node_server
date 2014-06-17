@@ -3,6 +3,8 @@ var express = require("express");
 var weixin = require("weixin-api");
 var app = express();
 
+app.use(express.bodyParser());
+
 // config
 weixin.token = "efef";
 
