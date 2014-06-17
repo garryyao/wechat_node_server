@@ -2,6 +2,8 @@
 var express = require("express");
 var weixin = require("weixin-api");
 var connect = require("connect");
+var Firebase = require('firebase');
+var myRootRef = new Firebase('https://ef-play-demo.firebaseIO.com/');
 var app = express();
 
 app.use(connect.json());
@@ -17,7 +19,7 @@ app.get('/', function(req, res) {
     if (weixin.checkSignature(req)) {
         res.send(200, req.query.echostr);
     } else {
-        res.send(200, 'fail');
+        res.send(200, 'hello EF!');
     }
 });
 
@@ -29,7 +31,6 @@ weixin.textMsg(function(msg) {
 
     switch (msg.content) {
         case "hello" :
-            // 返回文本消息
             resMsg = {
                 fromUserName : msg.toUserName,
                 toUserName : msg.fromUserName,
