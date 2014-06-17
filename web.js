@@ -44,7 +44,7 @@ weixin.textMsg(function(msg) {
         		fromUserName : msg.toUserName,
         		toUserName : msg.fromUserName,
         		msgType : "text",
-        		content : "hi back",
+        		content : msg.fromUserName,
         		funcFlag : 0
         	};
         	break;
