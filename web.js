@@ -2,6 +2,8 @@
 var express = require("express");
 var weixin = require("weixin-api");
 var connect = require("connect");
+var http = require("http");
+var request = require("request");
 var app = express();
 app.use(connect.json());
 app.use(connect.urlencoded());
@@ -9,6 +11,8 @@ app.use(connect.urlencoded());
 // wechat config
 weixin.token = "efef";
 var WEIXIN_HAO = "gh_a5956fdd03e2";
+var APP_ID = "wx4ee5ca70e09083cb";
+var APP_SECRET = "c6c24defe7cd98877a81a1b0cf67969d";
 
 // firebase declarations
 var Firebase = require('firebase');
@@ -74,11 +78,14 @@ weixin.textMsg(function(msg) {
 
 // listen for new messages and send to wechat users
 // check for change to messages in firebase, then push message to all users accordingly
-/*
+
 messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	var formatted_message = message.name + " says: " + message.text;
+	
 	console.log(formatted_message);
+
+	/*
 	var pushMsg = {};
 	pushMsg = {
 		fromUserName : WEIXIN_HAO,
@@ -88,9 +95,53 @@ messages.on('child_added', function(snapshot) {
 		funcFlag : 0
 	};
 	console.log(pushMsg);
-	weixin.sendMsg(pushMsg);
+	*/
+
+	// fetch access_token in order to 发送客服消息
+	var accessTokenURL = "https://api.wechat.com/cgi-bin/token?grant_type=client_credential&appid="+APP_ID+"&secret="+APP_SECRET;
+	var accessTokenOptions = {
+		method: "GET",
+		url: accessTokenURL,
+	};
+
+	function accessTokenCallback (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var access_token = JSON.parse(body).access_token;
+			console.log(access_token);
+
+			// now push the chat to the user
+			var pushChatURL = "https://api.wechat.com/cgi-bin/message/custom/send?access_token="+access_token;
+			var pushChatOptions = {
+				method: "POST",
+				url: pushChatURL,
+				body: JSON.stringify({
+					"touser" : "owHEYt8FZJVTvs3rp_3ra9tc-wfI",
+					"msgtype" : "text",
+					"text" :
+					{
+						"content" : formatted_message
+					}
+				})
+			};
+
+			function pushChatCallback (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					console.log("The message " + formatted_message + " was successfully delivered.");
+					console.log(body);
+				}
+			}
+
+			request(pushChatOptions, pushChatCallback);
+		}
+	}
+
+	request(accessTokenOptions, accessTokenCallback);
+
+
 });
-*/
+
+
+
 
 // Start
 app.post('/', function(req, res) {
