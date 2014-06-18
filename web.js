@@ -21,6 +21,7 @@ var firebase_url = 'https://ef-play-demo.firebaseio.com/';
 var fireRoute = new Firebase(firebase_url);
 var messages = fireRoute.child('messages');
 var users = fireRoute.child('users');
+var config = fireRoute.child('config');
 
 // authenticate signature
 app.get('/', function(req, res) {
@@ -32,15 +33,40 @@ app.get('/', function(req, res) {
     }
 });
 
+weixin.eventMsg(function(msg) {
+	console.log("eventMsg received");
+
+	var resMsg = {};
+	switch (msg.event) {
+		case "subscribe" :
+			resMsg = {
+				fromUserName : msg.toUserName,
+				toUserName : msg.fromUserName,
+				msgType : "text",
+				content : "Welcome to EF Play! Before we begin, what's your name?",
+				funcFlag : 0
+			};
+			break;
+
+		case "unsubscribe" :
+			resMsg = {
+				fromUserName : msg.toUserName,
+				toUserName : msg.fromUserName,
+				msgType : "text",
+				content : "Sorry to see you go! Goodbye.",
+				funcFlag : 0
+			};
+			break;
+
+	}
+
+	weixin.sendMsg(resMsg);
+});
+
 // receive text message event
 weixin.textMsg(function(msg) {
     console.log("textMsg received");
-    console.log(JSON.stringify(msg));
-
-    // add message to firebase
-    var name = "John";
-    var text = msg.content;
-    messages.push({ name: name, text: text });
+    console.log(JSON.stringify(msg));   
 
     var resMsg = {};
     switch (msg.content) {
@@ -72,6 +98,16 @@ weixin.textMsg(function(msg) {
         		content : WEIXIN_HAO,
         		funcFlag : 0
         	};
+        	break;
+
+        default:
+        	console.log("Sorry, no default response for this query");
+        	// add message to firebase
+		    var name = "John";
+		    var text = msg.content;
+		    messages.push({ name: name, text: text });
+		    // send a blank query back to wechat so they don't retry the request?
+
         	break;
     }
 
