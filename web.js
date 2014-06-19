@@ -142,8 +142,8 @@ weixin.textMsg(function(msg) {
 		} else if (userData.status === "confirmed") {
 		    var name = userData.name;
 		    var text = msg.content;
-		    messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
-		    messages.child(msg.msgId).child("read_by_"+msg.fromUserName).set(true);
+		    var read_by = "read_by_" + msg.fromUserName;
+		    messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName, read_by: true });
 		    weixin.sendMsg(resMsg);
 		} else {
 			console.log("There was an error");
@@ -165,6 +165,9 @@ messages.on('child_added', function(snapshot) {
 			var user = userSnapshot.val();
 			var wechatId = userSnapshot.name();
 			var read_by_user = "read_by_" + wechatId;
+			console.log(message[read_by_user]);
+			console.log(read_by_user);
+			console.log(formatted_message);
 			if (!message[read_by_user]) {
 				// if access token is undefined, wait 2 seconds
 				if (!ACCESS_TOKEN) {
