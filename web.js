@@ -162,15 +162,12 @@ messages.on('child_added', function(snapshot) {
 	users.once('value', function(usersSnapshot) {
 		usersSnapshot.forEach(function(userSnapshot) {
 			var user = userSnapshot.val();
+			console.log(user);
+
 			var wechatId = userSnapshot.name();
 			var read_by_user = "read_by_" + wechatId;
-			console.log(message[read_by_user]);
-			console.log(read_by_user);
-			console.log(formatted_message);
-			console.log(wechatId);
-			console.log(message.wechat);
-			console.log(wechatId != message.wechat);
 			if (!message[read_by_user] && (wechatId != message.wechat)) {
+				console.log("Delivering the message to " + user.name);
 				// if access token is undefined, wait 2 seconds
 				if (!ACCESS_TOKEN) {
 					setTimeout(function() {
@@ -189,7 +186,7 @@ messages.on('child_added', function(snapshot) {
 			method: "POST",
 			url: pushChatURL,
 			body: JSON.stringify({
-				"touser" : "owHEYt8FZJVTvs3rp_3ra9tc-wfI",
+				"touser" : wechatId,
 				"msgtype" : "text",
 				"text" :
 				{
