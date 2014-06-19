@@ -63,18 +63,18 @@ weixin.eventMsg(function(msg) {
 
 	switch (msg.event) {
 		case "subscribe" :
+			currentUserRef.set({status: "no name"});
 			resMsg = {
 				fromUserName : msg.toUserName,
 				toUserName : msg.fromUserName,
 				msgType : "text",
-				content : "Welcome to the demo! Before we begin, what's your name? (Note: Please reply with your first name only)",
+				content : "Welcome to the demo! Before we begin, what's your name? (Note: please reply with your first name only)",
 				funcFlag : 0
 			};
-			currentUserRef.set({status: "no name"});
 			break;
 
 		case "unsubscribe" :
-			// remove the user from the database
+			currentUserRef.remove();
 			break;
 	}
 
