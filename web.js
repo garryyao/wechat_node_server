@@ -162,8 +162,6 @@ messages.on('child_added', function(snapshot) {
 	users.once('value', function(usersSnapshot) {
 		usersSnapshot.forEach(function(userSnapshot) {
 			var user = userSnapshot.val();
-			console.log(user);
-
 			var wechatId = userSnapshot.name();
 			var read_by_user = "read_by_" + wechatId;
 			if (!message[read_by_user] && (wechatId != message.wechat)) {
