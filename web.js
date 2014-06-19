@@ -140,47 +140,12 @@ weixin.textMsg(function(msg) {
 			}
 			weixin.sendMsg(resMsg);
 		} else if (userData.status === "confirmed") {
-			switch (msg.content) {
-		        case "hello" :
-		            resMsg = {
-		                fromUserName : msg.toUserName,
-		                toUserName : msg.fromUserName,
-		                msgType : "text",
-		                content : "hi back",
-		                funcFlag : 0
-		            };
-		            break;
-
-		        case "my name" :
-		        	resMsg = {
-		        		fromUserName : msg.toUserName,
-		        		toUserName : msg.fromUserName,
-		        		msgType : "text",
-		        		content : msg.fromUserName,
-		        		funcFlag : 0
-		        	};
-		        	break;
-
-		        case "get app id" :
-		        	resMsg = {
-		        		fromUserName : msg.toUserName,
-		        		toUserName : msg.fromUserName,
-		        		msgType : "text",
-		        		content : WEIXIN_HAO,
-		        		funcFlag : 0
-		        	};
-		        	break;
-
-		        default:
-		        	console.log("Sorry, no default response for this query");
-				    var name = "John";
-				    var text = msg.content;
-				    messages.child(msg.msgId).set({ name: name, text: text });
-		        	break;
-		    }
+		    var name = userData.name;
+		    var text = msg.content;
+		    messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
 		    weixin.sendMsg(resMsg);
 		} else {
-			// error
+			console.log("There was an error");
 		}
 	});
 
