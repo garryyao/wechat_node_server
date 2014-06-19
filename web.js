@@ -102,7 +102,7 @@ weixin.textMsg(function(msg) {
                 content : reply,
                 funcFlag : 0
             };
-		} else if (userData.status === "confirming") {
+		} else if (userData.status == "confirming") {
 			switch (msg.content.toLowerCase()) {
 				case "yes" :
 					currentUserRef.update({status: "confirmed"});
@@ -180,46 +180,6 @@ weixin.textMsg(function(msg) {
 			// error
 		}
 	});
-
-    switch (msg.content) {
-        case "hello" :
-            resMsg = {
-                fromUserName : msg.toUserName,
-                toUserName : msg.fromUserName,
-                msgType : "text",
-                content : "hi back",
-                funcFlag : 0
-            };
-            break;
-
-        case "my name" :
-        	resMsg = {
-        		fromUserName : msg.toUserName,
-        		toUserName : msg.fromUserName,
-        		msgType : "text",
-        		content : msg.fromUserName,
-        		funcFlag : 0
-        	};
-        	break;
-
-        case "get app id" :
-        	resMsg = {
-        		fromUserName : msg.toUserName,
-        		toUserName : msg.fromUserName,
-        		msgType : "text",
-        		content : WEIXIN_HAO,
-        		funcFlag : 0
-        	};
-        	break;
-
-        default:
-        	console.log("Sorry, no default response for this query");
-        	// add message to firebase
-		    var name = "John";
-		    var text = msg.content;
-		    messages.child(msg.msgId).set({ name: name, text: text });
-        	break;
-    }
 
     weixin.sendMsg(resMsg);
 });
