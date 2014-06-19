@@ -38,7 +38,7 @@ function getToken() {
 			ACCESS_TOKEN = new Object();
 			ACCESS_TOKEN.access_token = data.access_token;
 			ACCESS_TOKEN.expiration = (new Date().getTime()) + (data.expires_in - 10) * 1000;
-			console.log("New access token retrived: " + ACCESS_TOKEN.access_token);
+			console.log("New access token retrieved: " + ACCESS_TOKEN.access_token);
 		}
 	}
 	request(accessTokenOptions, accessTokenCallback);
@@ -197,8 +197,10 @@ messages.on('child_added', function(snapshot) {
 			if (!error && response.statusCode == 200) {
 				bodyObject = JSON.parse(body);
 				if (bodyObject.errmsg === "ok") {
-					console.log("Message successfully delivered: " + formatted_message);
-					msgRef.child("read_by_"+wechatId).set(true);
+					console.log("Message successfully delivered--" + formatted_message);
+					msgRef.child("read_by_"+wechatId).set(true, function() {
+						console.log("...and marked as read by " + wechatId);
+					}); // this doesn't work until restarting server ***
 				} else {
 					console.log("There was an error delivering the message: " + formatted_message);
 				}
