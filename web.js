@@ -102,6 +102,7 @@ weixin.textMsg(function(msg) {
                 content : reply,
                 funcFlag : 0
             };
+            weixin.sendMsg(resMsg);
 		} else if (userData.status == "confirming") {
 			switch (msg.content.toLowerCase()) {
 				case "yes" :
@@ -137,6 +138,7 @@ weixin.textMsg(function(msg) {
 		            };
 		            break;
 			}
+			weixin.sendMsg(resMsg);
 		} else if (userData.status === "confirmed") {
 			switch (msg.content) {
 		        case "hello" :
@@ -176,12 +178,13 @@ weixin.textMsg(function(msg) {
 				    messages.child(msg.msgId).set({ name: name, text: text });
 		        	break;
 		    }
+		    weixin.sendMsg(resMsg);
 		} else {
 			// error
 		}
 	});
 
-    weixin.sendMsg(resMsg);
+    // weixin.sendMsg(resMsg);
 });
 
 // handle new firebase message event
