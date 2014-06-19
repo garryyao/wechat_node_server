@@ -143,7 +143,6 @@ weixin.textMsg(function(msg) {
 		    var name = userData.name;
 		    var text = msg.content;
 		    messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
-		    messages.child(msg.msgId).child("read_by_"+msg.fromUserName).set(true);
 		    weixin.sendMsg(resMsg);
 		} else {
 			console.log("There was an error");
@@ -168,6 +167,9 @@ messages.on('child_added', function(snapshot) {
 			console.log(message[read_by_user]);
 			console.log(read_by_user);
 			console.log(formatted_message);
+			console.log(wechatId);
+			console.log(message.wechat);
+			console.log(wechatId != message.wechat);
 			if (!message[read_by_user] && (wechatId != message.wechat)) {
 				// if access token is undefined, wait 2 seconds
 				if (!ACCESS_TOKEN) {
