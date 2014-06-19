@@ -44,7 +44,6 @@ function getToken() {
 	request(accessTokenOptions, accessTokenCallback);
 }
 
-
 // authenticate signature
 app.get('/', function(req, res) {
 	console.log(typeof res);
@@ -55,41 +54,45 @@ app.get('/', function(req, res) {
     }
 });
 
+// handle wechat subscription event
 weixin.eventMsg(function(msg) {
 	console.log("eventMsg received");
 
+	var currentUserRef = users.child(msg.fromUserName);
 	var resMsg = {};
+
 	switch (msg.event) {
 		case "subscribe" :
 			resMsg = {
 				fromUserName : msg.toUserName,
 				toUserName : msg.fromUserName,
 				msgType : "text",
-				content : "Welcome to EF Play! Before we begin, what's your name? (Note: Please reply with your first name only)",
+				content : "Welcome to the demo! Before we begin, what's your name? (Note: Please reply with your first name only)",
 				funcFlag : 0
 			};
+			currentUserRef.set({status: "no name"});
 			break;
 
 		case "unsubscribe" :
-			resMsg = {
-				fromUserName : msg.toUserName,
-				toUserName : msg.fromUserName,
-				msgType : "text",
-				content : "Sorry to see you go! Goodbye.",
-				funcFlag : 0
-			};
+			// remove the user from the database
 			break;
 	}
 
 	weixin.sendMsg(resMsg);
 });
 
-// receive text message event
+// handle receive wechat text message event
 weixin.textMsg(function(msg) {
     console.log("textMsg received");
-    console.log(JSON.stringify(msg));   
+    console.log(JSON.stringify(msg));
 
+    var currentUserRef = users.child(msg.fromUserName);
     var resMsg = {};
+
+    // verify the user, and ask to confirm username if needed   
+    
+    
+
     switch (msg.content) {
         case "hello" :
             resMsg = {
@@ -133,8 +136,7 @@ weixin.textMsg(function(msg) {
     weixin.sendMsg(resMsg);
 });
 
-// listen for new messages and send to wechat users
-// check for change to messages in firebase, then push message to all users accordingly
+// handle new firebase message event
 messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
 	var msgRef = snapshot.ref();
