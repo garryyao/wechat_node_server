@@ -21,7 +21,30 @@ var firebase_url = 'https://ef-play-demo.firebaseio.com/';
 var fireRoute = new Firebase(firebase_url);
 var messages = fireRoute.child('messages');
 var users = fireRoute.child('users');
-var config = fireRoute.child('config');
+
+// get a new access token every hour
+getToken();
+setInterval(getToken, 3600000);
+function getToken() {
+	var accessTokenURL = "https://api.wechat.com/cgi-bin/token?grant_type=client_credential&appid="+APP_ID+"&secret="+APP_SECRET;
+	var accessTokenOptions = {
+		method: "GET",
+		url: accessTokenURL,
+	};
+	var ACCESS_TOKEN = undefined;
+
+	function accessTokenCallback (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			var data = JSON.parse(body);
+			ACCESS_TOKEN = new Object();
+			ACCESS_TOKEN.access_token = data.access_token;
+			ACCESS_TOKEN.expiration = (new Date().getTime()) + (data.expires_in - 10) * 1000;
+			console.log("New access token retrived: " + ACCESS_TOKEN.access_token);
+		}
+	}
+	request(accessTokenOptions, accessTokenCallback);
+}
+
 
 // authenticate signature
 app.get('/', function(req, res) {
@@ -43,7 +66,7 @@ weixin.eventMsg(function(msg) {
 				fromUserName : msg.toUserName,
 				toUserName : msg.fromUserName,
 				msgType : "text",
-				content : "Welcome to EF Play! Before we begin, what's your name?",
+				content : "Welcome to EF Play! Before we begin, what's your name? (Note: Please reply with your first name only)",
 				funcFlag : 0
 			};
 			break;
@@ -57,7 +80,6 @@ weixin.eventMsg(function(msg) {
 				funcFlag : 0
 			};
 			break;
-
 	}
 
 	weixin.sendMsg(resMsg);
@@ -105,9 +127,7 @@ weixin.textMsg(function(msg) {
         	// add message to firebase
 		    var name = "John";
 		    var text = msg.content;
-		    messages.push({ name: name, text: text });
-		    // send a blank query back to wechat so they don't retry the request?
-
+		    messages.child(msg.msgId).set({ name: name, text: text });
         	break;
     }
 
@@ -116,26 +136,20 @@ weixin.textMsg(function(msg) {
 
 // listen for new messages and send to wechat users
 // check for change to messages in firebase, then push message to all users accordingly
-
 messages.on('child_added', function(snapshot) {
 	var message = snapshot.val();
+	var msgRef = snapshot.ref();
 	var formatted_message = message.name + " says: " + message.text;
-	console.log(formatted_message);
-
-	// fetch access_token in order to 发送客服消息
 	
-
-	// if the token is valid
-	// then use the token and go straight to pushing the chat
-	// else
-	// fetch the token now and then push the chat after (in a callback)
-
-	if (!!ACCESS_TOKEN && ((new Date().getTime()) < ACCESS_TOKEN.expiration)) {
-		console.log("Pushing message without getting new token");
-		pushChat();
-	} else {
-		console.log("Pushing message and getting a new token");
-		getToken();
+	if (!message.read) {
+		// if access token is undefined, wait 2 seconds
+		if (!ACCESS_TOKEN) {
+			setTimeout(function() {
+				pushChat();
+			}, 3000);
+		} else {
+			pushChat();
+		}
 	}
 
 	function pushChat() {
@@ -155,35 +169,17 @@ messages.on('child_added', function(snapshot) {
 
 		function pushChatCallback (error, response, body) {
 			if (!error && response.statusCode == 200) {
-				console.log(body);
-				// if the message comes back ok i.e. "errmsg" is "ok", then change status to read for wechat users
+				bodyObject = JSON.parse(body);
+				if (bodyObject.errmsg === "ok") {
+					console.log("Message successfully delivered: " + formatted_message);
+					msgRef.update({read:true});
+				} else {
+					console.log("There was an error delivering the message: " + formatted_message);
+				}
 			}
 		}
 
 		request(pushChatOptions, pushChatCallback);
-	}
-
-	function getToken() {
-		var accessTokenURL = "https://api.wechat.com/cgi-bin/token?grant_type=client_credential&appid="+APP_ID+"&secret="+APP_SECRET;
-		var accessTokenOptions = {
-			method: "GET",
-			url: accessTokenURL,
-		};
-
-		function accessTokenCallback (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				var data = JSON.parse(body);
-				ACCESS_TOKEN = new Object();
-				ACCESS_TOKEN.access_token = data.access_token;
-				ACCESS_TOKEN.expiration = (new Date().getTime()) + (data.expires_in - 10) * 1000;
-
-				console.log(ACCESS_TOKEN);
-
-				// now push the chat to the user
-				pushChat();
-			}
-		}
-		request(accessTokenOptions, accessTokenCallback);
 	}
 });
 
