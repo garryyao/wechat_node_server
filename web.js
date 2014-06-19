@@ -31,7 +31,6 @@ function getToken() {
 		method: "GET",
 		url: accessTokenURL,
 	};
-	var ACCESS_TOKEN = undefined;
 
 	function accessTokenCallback (error, response, body) {
 		if (!error && response.statusCode == 200) {
