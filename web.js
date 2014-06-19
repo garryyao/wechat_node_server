@@ -158,18 +158,26 @@ messages.on('child_added', function(snapshot) {
 	var msgRef = snapshot.ref();
 	var formatted_message = message.name + " says: " + message.text;
 	
-	if (!message.read) {
-		// if access token is undefined, wait 2 seconds
-		if (!ACCESS_TOKEN) {
-			setTimeout(function() {
-				pushChat();
-			}, 3000);
-		} else {
-			pushChat();
-		}
-	}
+	// go through all the users and see if it needs to be sent
+	users.once('value', function(usersSnapshot) {
+		usersSnapshot.forEach(function(userSnapshot) {
+			var user = userSnapshot.val();
+			var wechatId = user.name();
+			var read_by_user = "read_by_" + wechatId;
+			if (!message[read_by_user]) {
+				// if access token is undefined, wait 2 seconds
+				if (!ACCESS_TOKEN) {
+					setTimeout(function() {
+						pushChat(wechatId);
+					}, 3000);
+				} else {
+					pushChat(wechatId);
+				}
+			}
+		});
+	});	
 
-	function pushChat() {
+	function pushChat(wechatId) {
 		var pushChatURL = "https://api.wechat.com/cgi-bin/message/custom/send?access_token="+ACCESS_TOKEN.access_token;
 		var pushChatOptions = {
 			method: "POST",
@@ -189,7 +197,7 @@ messages.on('child_added', function(snapshot) {
 				bodyObject = JSON.parse(body);
 				if (bodyObject.errmsg === "ok") {
 					console.log("Message successfully delivered: " + formatted_message);
-					msgRef.update({read:true});
+					msgRef.child("read_by_"+wechatId).set(true);
 				} else {
 					console.log("There was an error delivering the message: " + formatted_message);
 				}
@@ -201,11 +209,12 @@ messages.on('child_added', function(snapshot) {
 });
 
 
-// Start
+// initiate response to wechat post request (text, img, event etc)
 app.post('/', function(req, res) {
     weixin.loop(req, res);
 });
 
+// start the server
 var port = Number(process.env.PORT || 5000);
 app.listen(port, function() {
   console.log("Listening on " + port);
