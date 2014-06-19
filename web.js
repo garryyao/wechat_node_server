@@ -89,9 +89,97 @@ weixin.textMsg(function(msg) {
     var currentUserRef = users.child(msg.fromUserName);
     var resMsg = {};
 
-    // verify the user, and ask to confirm username if needed   
-    
-    
+    // verify the user, then proceed accordingly based on db
+    currentUserRef.once('value', function(snapshot) {
+		var userData = snapshot.val();
+		if (userData.status === "no name") {
+			currentUserRef.update({name: msg.content, status: "confirming"});
+			var reply = "Your name is " + msg.content + ". Is that correct? (Note: please reply 'Yes' or 'No')";
+			resMsg = {
+                fromUserName : msg.toUserName,
+                toUserName : msg.fromUserName,
+                msgType : "text",
+                content : reply,
+                funcFlag : 0
+            };
+		} else if (userData.status === "confirming") {
+			switch (msg.content.toLowerCase()) {
+				case "yes" :
+					currentUserRef.update({status: "confirmed"});
+					resMsg = {
+		                fromUserName : msg.toUserName,
+		                toUserName : msg.fromUserName,
+		                msgType : "text",
+		                content : "Great! I'll join you in with the chat now.",
+		                funcFlag : 0
+		            };
+					break;
+
+				case "no" :
+					currentUserRef.update({status: "no name"});
+					resMsg = {
+		                fromUserName : msg.toUserName,
+		                toUserName : msg.fromUserName,
+		                msgType : "text",
+		                content : "I'm sorry! Let's try again. What is your first name?",
+		                funcFlag : 0
+		            };
+					break;
+
+				default:
+					var reply = "I'm sorry I didn't catch that. Just to confirm, is your name " + userData.name + "? (Note: please reply 'Yes' or 'No')";
+					resMsg = {
+		                fromUserName : msg.toUserName,
+		                toUserName : msg.fromUserName,
+		                msgType : "text",
+		                content : reply,
+		                funcFlag : 0
+		            };
+		            break;
+			}
+		} else if (userData.status === "confirmed") {
+			switch (msg.content) {
+		        case "hello" :
+		            resMsg = {
+		                fromUserName : msg.toUserName,
+		                toUserName : msg.fromUserName,
+		                msgType : "text",
+		                content : "hi back",
+		                funcFlag : 0
+		            };
+		            break;
+
+		        case "my name" :
+		        	resMsg = {
+		        		fromUserName : msg.toUserName,
+		        		toUserName : msg.fromUserName,
+		        		msgType : "text",
+		        		content : msg.fromUserName,
+		        		funcFlag : 0
+		        	};
+		        	break;
+
+		        case "get app id" :
+		        	resMsg = {
+		        		fromUserName : msg.toUserName,
+		        		toUserName : msg.fromUserName,
+		        		msgType : "text",
+		        		content : WEIXIN_HAO,
+		        		funcFlag : 0
+		        	};
+		        	break;
+
+		        default:
+		        	console.log("Sorry, no default response for this query");
+				    var name = "John";
+				    var text = msg.content;
+				    messages.child(msg.msgId).set({ name: name, text: text });
+		        	break;
+		    }
+		} else {
+			// error
+		}
+	});
 
     switch (msg.content) {
         case "hello" :
