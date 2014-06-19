@@ -142,8 +142,13 @@ weixin.textMsg(function(msg) {
 		} else if (userData.status === "confirmed") {
 		    var name = userData.name;
 		    var text = msg.content;
-		    messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
-		    weixin.sendMsg(resMsg);
+		    messages.child(msg.msgId).once('value', function(msgSnapshot) { 
+		    	if (!msgSnapshot.hasChild('wechat')) {
+		    		messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
+		    	}
+		    });
+		    
+		    //weixin.sendMsg(resMsg);
 		} else {
 			console.log("There was an error");
 		}
