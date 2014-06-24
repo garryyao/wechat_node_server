@@ -147,7 +147,14 @@ weixin.textMsg(function(msg) {
 		    	}
 		    });
 		} else {
-			console.log("There was an error");
+			resMsg = {
+				fromUserName : msg.toUserName,
+                toUserName : msg.fromUserName,
+                msgType : "text",
+                content : "",
+                funcFlag : 0
+			};
+			weixin.sendMsg(resMsg);
 		}
 	});
 });
