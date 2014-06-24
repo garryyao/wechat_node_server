@@ -2,23 +2,22 @@
 var express = require("express");
 var weixin = require("weixin-api");
 var connect = require("connect");
-var http = require("http");
 var request = require("request");
 var app = express();
 app.use(connect.json());
 app.use(connect.urlencoded());
 
 // wechat config
-weixin.token = "efef";
-var WEIXIN_HAO = "gh_a5956fdd03e2";
-var APP_ID = "wx3bd6462d57a03618";
-var APP_SECRET = "f59d49264e430799579bd831a1927f0b";
+var config = require("./config"); // replace with your own variables or create your own config.js file
+weixin.token = config.weixin_token;
+var WEIXIN_HAO = config.weixin_hao;
+var APP_ID = config.app_id;
+var APP_SECRET = config.app_secret;
 var ACCESS_TOKEN;
 
 // firebase declarations
 var Firebase = require('firebase');
-var firebase_url = 'https://ef-play-demo.firebaseio.com/';
-var fireRoute = new Firebase(firebase_url);
+var fireRoute = new Firebase(config.firebase_url);
 var messages = fireRoute.child('messages');
 var users = fireRoute.child('users');
 
@@ -147,14 +146,10 @@ weixin.textMsg(function(msg) {
 		    		messages.child(msg.msgId).set({ name: name, text: text, wechat: msg.fromUserName });
 		    	}
 		    });
-		    
-		    //weixin.sendMsg(resMsg);
 		} else {
 			console.log("There was an error");
 		}
 	});
-
-    // weixin.sendMsg(resMsg);
 });
 
 // handle new firebase message event
