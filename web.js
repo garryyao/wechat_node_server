@@ -1,6 +1,6 @@
 // app declarations
 var express = require("express");
-var weixin = require("weixin-api");
+var weixin = require("./weixin-api/index.js");
 var connect = require("connect");
 var request = require("request");
 var app = express();
