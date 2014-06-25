@@ -7,17 +7,16 @@ var app = express();
 app.use(connect.json());
 app.use(connect.urlencoded());
 
-// wechat config
-var config = require("./config"); // replace with your own variables or create your own config.js file
-weixin.token = config.weixin_token;
-var WEIXIN_HAO = config.weixin_hao;
-var APP_ID = config.app_id;
-var APP_SECRET = config.app_secret;
+// wechat config, replace with your own variables
+weixin.token = process.env.WEIXIN_TOKEN;
+var WEIXIN_HAO = process.env.WEIXIN_HAO;
+var APP_ID = process.env.APP_ID;
+var APP_SECRET = process.env.APP_SECRET;
 var ACCESS_TOKEN;
 
 // firebase declarations
 var Firebase = require('firebase');
-var fireRoute = new Firebase(config.firebase_url);
+var fireRoute = new Firebase(process.env.FIREBASE_URL);
 var messages = fireRoute.child('messages');
 var users = fireRoute.child('users');
 
