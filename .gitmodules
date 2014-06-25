@@ -1,0 +1,3 @@
+[submodule "weixin"]
+	path = weixin
+	url = https://github.com/johnheroy/weixin_api.git
